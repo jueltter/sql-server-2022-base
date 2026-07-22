@@ -9,10 +9,8 @@ stages:
 variables:
   DOCKER_HOST: "tcp://docker:2375"
   DOCKER_TLS_CERTDIR: ""
-  DOCKER_BUILDKIT: "0"
-  IMAGE_NAME: $REGISTRY_DOMAIN/development/infrastructure/sql-server-2022-base/sql-server-2022-base
-  REGISTRY_DOMAIN: $REGISTRY_DOMAIN
-  MAIN_DOMAIN: $MAIN_DOMAIN
+  DOCKER_BUILDKIT: "1"
+  IMAGE_NAME: "$REGISTRY_DOMAIN/development/infrastructure/sql-server-2022-base/sql-server-2022-base"
 
 
 build_and_push:
@@ -27,11 +25,8 @@ build_and_push:
   tags:
     - shared
   before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
-    # Extract tag
-    - export IMAGE_TAG=$(git rev-parse HEAD)
-    - export VERSION_TAG=$(git tag --points-at $IMAGE_TAG | grep $CI_COMMIT_TAG || echo "")
-    # Build with Dockerfile and push
-    - docker build -t $IMAGE_NAME:$VERSION_TAG .
-    - docker push $IMAGE_NAME:$VERSION_TAG
+    - export MSSQL_PASSWORD="$CONTAINER_USER_PASSWORD"
+    - docker build --secret id=mssql_password,env=MSSQL_PASSWORD -t "$IMAGE_NAME:$CI_COMMIT_TAG" .
+    - docker push $IMAGE_NAME:$CI_COMMIT_TAG
