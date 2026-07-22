@@ -1,0 +1,35 @@
+workflow:
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^\d{4}-\d{4}-\d{2}-(DEV|PROD)$/'
+    - when: never
+
+stages:
+  - build
+
+variables:
+  DOCKER_HOST: "tcp://docker:2375"
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_BUILDKIT: "0"
+  IMAGE_NAME: $REGISTRY_DOMAIN/development/infrastructure/sql-server-2022-base/sql-server-2022-base
+
+
+build_and_push:
+  stage: build
+  image: docker:29.6.0-cli
+  services:
+    - name: docker:29.6.0-dind
+      command: [
+        "--insecure-registry=$REGISTRY_DOMAIN",
+        "--insecure-registry=$MAIN_DOMAIN"
+      ]
+  tags:
+    - shared
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    # Extract tag
+    - export IMAGE_TAG=$(git rev-parse HEAD)
+    - export VERSION_TAG=$(git tag --points-at $IMAGE_TAG | grep $CI_COMMIT_TAG || echo "")
+    # Build with Dockerfile and push
+    - docker build -t $IMAGE_NAME:$VERSION_TAG .
+    - docker push $IMAGE_NAME:$VERSION_TAG
