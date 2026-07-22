@@ -1,0 +1,22 @@
+name: sql-server-2022
+
+services:
+  sql-server-2022:
+    build:
+      context: .
+      args:
+        MSSQL_PASSWORD: ${MSSQL_PASSWORD}
+    container_name: sql-server-2022
+    restart: unless-stopped
+    ports:
+      - "2222:22"
+      - "1433:1433"
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    volumes:
+      - sql_data:/var/opt/mssql
+
+volumes:
+  sql_data:
