@@ -2,10 +2,7 @@ name: sql-server-2022
 
 services:
   sql-server-2022:
-    build:
-      context: .
-      args:
-        MSSQL_PASSWORD: ${MSSQL_PASSWORD}
+    image: sql-server-2022:latest
     container_name: sql-server-2022
     restart: unless-stopped
     ports:
