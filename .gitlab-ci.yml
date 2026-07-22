@@ -11,6 +11,8 @@ variables:
   DOCKER_TLS_CERTDIR: ""
   DOCKER_BUILDKIT: "0"
   IMAGE_NAME: $REGISTRY_DOMAIN/development/infrastructure/sql-server-2022-base/sql-server-2022-base
+  REGISTRY_DOMAIN: $REGISTRY_DOMAIN
+  MAIN_DOMAIN: $MAIN_DOMAIN
 
 
 build_and_push:
