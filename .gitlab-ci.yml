@@ -10,6 +10,7 @@ variables:
   DOCKER_HOST: "tcp://docker:2375"
   DOCKER_TLS_CERTDIR: ""
   DOCKER_BUILDKIT: "1"
+  DOCKER_DIND_OPTIONS: "--insecure-registry=$REGISTRY_DOMAIN --insecure-registry=$MAIN_DOMAIN"
   IMAGE_NAME: "$REGISTRY_DOMAIN/development/infrastructure/sql-server-2022-base/sql-server-2022-base"
 
 
@@ -18,13 +19,6 @@ build_and_push:
   image: docker:29.6.0-cli
   services:
     - name: docker:29.6.0-dind
-      entrypoint:
-        - "sh"
-        - "-c"
-        - |
-          mkdir -p /etc/docker
-          echo "{\"insecure-registries\": [\"$REGISTRY_DOMAIN\", \"$MAIN_DOMAIN\"]}" > /etc/docker/daemon.json
-          exec dockerd-entrypoint.sh
   tags:
     - shared
   before_script:
