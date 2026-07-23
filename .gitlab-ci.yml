@@ -9,7 +9,7 @@ stages:
 variables:
   DOCKER_HOST: "tcp://docker:2375"
   DOCKER_TLS_CERTDIR: ""
-  IMAGE_NAME: "$REGISTRY_DOMAIN/development/infrastructure/sql-server-2022-base/sql-server-base"
+  IMAGE_NAME: "$REGISTRY_DOMAIN/development/infrastructure/sql-server-base/sql-server-base"
 
 
 build_and_push:
