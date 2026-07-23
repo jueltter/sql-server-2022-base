@@ -1,12 +1,5 @@
 # sql-server-base
 
-## Build Image
-```bash
-cp ./secrets/mssql_password.txt.example ./secrets/mssql_password.txt
-cp .env.example .env
-docker compose build
-```
-
 ## Build, Run & Stop Container
 ```bash
 cp ./secrets/mssql_password.txt.example ./secrets/mssql_password.txt

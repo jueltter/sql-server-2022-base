@@ -4,8 +4,8 @@ services:
   sql-server:
     build:
       context: .
-    secrets:
-      - mssql_password
+      secrets:
+        - mssql_password
     container_name: sql-server
     restart: unless-stopped
     ports:
