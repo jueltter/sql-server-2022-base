@@ -1,6 +1,6 @@
 workflow:
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^\d{4}-\d{4}-\d{2}-(DEV|PROD)$/'
+    - if: '$CI_COMMIT_TAG =~ /^\d{4}-(DEV|PROD)$/'
     - when: never
 
 stages:
@@ -25,5 +25,4 @@ build_and_push:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
     - export MSSQL_PASSWORD="$CONTAINER_USER_PASSWORD"
-    - docker buildx build --provenance=false --platform linux/amd64 --secret id=mssql_password,env=MSSQL_PASSWORD -t "$IMAGE_NAME:$CI_COMMIT_TAG" .
-    - docker push $IMAGE_NAME:$CI_COMMIT_TAG
+    - docker buildx build --provenance=false --platform linux/amd64 --secret id=mssql_password,env=MSSQL_PASSWORD -t "$IMAGE_NAME:$CI_COMMIT_TAG" --push .
