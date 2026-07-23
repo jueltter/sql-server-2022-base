@@ -9,7 +9,6 @@ stages:
 variables:
   DOCKER_HOST: "tcp://docker:2375"
   DOCKER_TLS_CERTDIR: ""
-  DOCKER_BUILDKIT: "1"
   IMAGE_NAME: "$REGISTRY_DOMAIN/development/infrastructure/sql-server-2022-base/sql-server-2022-base"
 
 
@@ -29,8 +28,11 @@ build_and_push:
       [registry."$MAIN_DOMAIN"]
         http = false
         insecure = true
+      [registry."$REGISTRY_DOMAIN"]
+        http = false
+        insecure = true
       EOF
       docker buildx create --use --config /etc/buildkit/buildkitd.toml --name custom-builder
   script:
     - export MSSQL_PASSWORD="$CONTAINER_USER_PASSWORD"
-    - docker buildx build --provenance=false --platform linux/amd64 --secret id=mssql_password,env=MSSQL_PASSWORD -t "$IMAGE_NAME:$CI_COMMIT_TAG" --push .
+    - docker build --provenance=false --platform linux/amd64 --secret id=mssql_password,env=MSSQL_PASSWORD -t "$IMAGE_NAME:$CI_COMMIT_TAG" --push .
