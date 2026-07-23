@@ -18,17 +18,10 @@ build_and_push:
   image: docker:29.6.0-cli
   services:
     - name: docker:29.6.0-dind
+      entrypoint: ["sh", "-c", "dockerd-entrypoint.sh --insecure-registry=$REGISTRY_DOMAIN --insecure-registry=$MAIN_DOMAIN"]
   tags:
     - shared
   before_script:
-    # install ca-certificates and add internal CA certificate
-    - apk add --no-cache ca-certificates
-    - cp "$INTERNAL_CA_CERT" /usr/local/share/ca-certificates/internal-ca.crt
-    - update-ca-certificates
-    # configure docker to trust the internal registry
-    - mkdir -p /etc/docker/certs.d/registry-gitlab-dtic.finanzas.gob.ec/
-    - cp "$INTERNAL_CA_CERT" /etc/docker/certs.d/registry-gitlab-dtic.finanzas.gob.ec/ca.crt
-    # login to the internal registry
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
     - export MSSQL_PASSWORD="$CONTAINER_USER_PASSWORD"
