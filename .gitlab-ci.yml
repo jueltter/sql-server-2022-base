@@ -18,10 +18,17 @@ build_and_push:
   image: docker:29.6.0-cli
   services:
     - name: docker:29.6.0-dind
-      entrypoint: ["sh", "-c", "dockerd-entrypoint.sh --insecure-registry=$REGISTRY_DOMAIN --insecure-registry=$MAIN_DOMAIN"]
+      entrypoint:
+        - "sh"
+        - "-c"
+        - |
+          mkdir -p /etc/docker
+          echo "{\"insecure-registries\": [\"$REGISTRY_DOMAIN\", \"$MAIN_DOMAIN\"]}" > /etc/docker/daemon.json
+          exec dockerd-entrypoint.sh
   tags:
     - shared
   before_script:
+    - docker info
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$REGISTRY_DOMAIN"
   script:
     - export MSSQL_PASSWORD="$CONTAINER_USER_PASSWORD"
