@@ -18,16 +18,11 @@ build_and_push:
   image: docker:29.6.0-cli
   services:
     - name: docker:29.6.0-dind
-      command:
-        - "dockerd-entrypoint.sh"
-        - "--insecure-registry"
-        - "$REGISTRY_DOMAIN"
-        - "--insecure-registry"
-        - "$MAIN_DOMAIN"
+      entrypoint: ["sh", "-c", "dockerd-entrypoint.sh --insecure-registry=$REGISTRY_DOMAIN --insecure-registry=$MAIN_DOMAIN"]
   tags:
     - shared
   before_script:
-    - docker info
+    - until docker info >/dev/null 2>&1; do echo "Waiting for docker daemon..."; sleep 1; done
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$REGISTRY_DOMAIN"
   script:
     - export MSSQL_PASSWORD="$CONTAINER_USER_PASSWORD"
