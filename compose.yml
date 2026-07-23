@@ -1,9 +1,12 @@
-name: sql-server-2022
+name: sql-server
 
 services:
-  sql-server-2022:
-    image: sql-server-2022:latest
-    container_name: sql-server-2022
+  sql-server:
+    build:
+      context: .
+    secrets:
+      - mssql_password
+    container_name: sql-server
     restart: unless-stopped
     ports:
       - "2222:22"
@@ -17,3 +20,7 @@ services:
 
 volumes:
   sql_data:
+
+secrets:
+  mssql_password:
+    file: ./secrets/mssql_password.txt

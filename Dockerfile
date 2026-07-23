@@ -1,6 +1,11 @@
-FROM mcr.microsoft.com/mssql/server:2022-latest
+ARG SQL_SERVER_IMAGE_TAG=latest
+
+FROM mcr.microsoft.com/mssql/server:${SQL_SERVER_IMAGE_TAG}
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG SQL_SERVER_IMAGE_TAG
+RUN echo "SQL_SERVER_IMAGE_TAG: ${SQL_SERVER_IMAGE_TAG}"
+
 
 USER root
 

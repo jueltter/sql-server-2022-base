@@ -1,15 +1,20 @@
-# sql-server-2022-base
+# sql-server-base
 
 ## Build Image
 ```bash
-cp mssql_password.txt.example mssql_password.txt
-docker build --secret id=mssql_password,src=./mssql_password.txt -t sql-server-2022:latest .
+cp ./secrets/mssql_password.txt.example ./secrets/mssql_password.txt
+cp .env.example .env
+docker compose build
 ```
 
-## Run / Stop Container
+## Build, Run & Stop Container
 ```bash
+cp ./secrets/mssql_password.txt.example ./secrets/mssql_password.txt
 cp .env.example .env
+
+docker compose build
 docker compose up -d
+
 docker compose down -v
 ```
 
